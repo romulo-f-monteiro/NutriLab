@@ -272,6 +272,37 @@
             border: none;
         }
 
+        #nutrilab .nl-video-parts {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        #nutrilab .nl-part-btn {
+            background: var(--nl-bg);
+            border: 1px solid var(--nl-border);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--nl-text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        #nutrilab .nl-part-btn:hover {
+            border-color: var(--nl-primary);
+            color: var(--nl-primary);
+        }
+
+        #nutrilab .nl-part-btn.active {
+            background: var(--nl-primary);
+            color: var(--nl-surface);
+            border-color: var(--nl-primary);
+        }
+
         #nutrilab .nl-player-info {
             margin-top: 1.5rem;
             background: var(--nl-surface);
@@ -433,6 +464,9 @@
                 <div class="nl-video-container" id="nl-video-container">
                     <!-- Iframe do YouTube será injetado aqui -->
                 </div>
+                <div id="nl-video-parts" class="nl-video-parts">
+                    <!-- Botões de Parte 1, Parte 2 serão injetados aqui via JS se houver mais de um vídeo -->
+                </div>
                 <div class="nl-player-info">
                     <h1 id="nl-player-title">Título do Curso</h1>
                     <p id="nl-player-desc">Descrição do curso...</p>
@@ -451,22 +485,57 @@
 
 <script>
     (function() {
-        // Base de Dados dos Cursos
+        // ==============================================================================
+        // 📚 ÁREA PARA ADICIONAR OU EDITAR OS CURSOS
+        // Siga os comentários abaixo para adicionar novos vídeos, legendas e categorias.
+        // ==============================================================================
         const courses = [
             {
-                id: 'l8liCA_HQCA',
-                title: 'Como calcular uma dieta',
-                category: 'Cálculos Nutricionais',
-                desc: 'Aprenda os conceitos fundamentais para realizar cálculos e desenvolver um planejamento alimentar.',
-                thumb: 'https://img.youtube.com/vi/l8liCA_HQCA/mqdefault.jpg'
+                // 1. Identificador único do curso (não use espaços, invente um nome curto)
+                id: 'curso_calculo_dieta', 
+                
+                // 2. Título principal do curso (Legenda)
+                title: 'Como calcular uma dieta', 
+                
+                // 3. Categoria (Aparece em cima do título)
+                category: 'Cálculos Nutricionais', 
+                
+                // 4. Descrição do curso (Sublegenda)
+                desc: 'Aprenda os conceitos fundamentais para realizar cálculos e desenvolver um planejamento alimentar passo a passo.', 
+                
+                // 5. Imagem de capa (Você pode pegar do YouTube mudando o ID no meio do link abaixo)
+                thumb: 'https://img.youtube.com/vi/l8liCA_HQCA/mqdefault.jpg', 
+                
+                // 6. 🎥 LISTA DE VÍDEOS DESTE CURSO (Aqui você coloca Parte 1, Parte 2, etc.)
+                videos: [
+                    {
+                        // Coloque APENAS o ID do vídeo do YouTube (letras/números depois de ?v=)
+                        youtubeId: 'l8liCA_HQCA', 
+                        // Título deste botão/vídeo
+                        subtitle: 'Aula Única' 
+                    }
+                    // Se quiser adicionar uma parte 2 neste curso, basta adicionar uma vírgula acima e copiar o bloco {}, como no exemplo abaixo.
+                ]
             },
             {
-                id: '-lFBEsYcXSM',
-                title: 'Macronutrientes',
+                id: 'curso_macronutrientes',
+                title: 'Macronutrientes na Prática',
                 category: 'Nutrição Básica',
-                desc: 'Conheça os macronutrientes e sua importância no planejamento nutricional.',
-                thumb: 'https://img.youtube.com/vi/-lFBEsYcXSM/mqdefault.jpg'
+                desc: 'Conheça os macronutrientes e sua importância no planejamento nutricional. Este curso está dividido em duas partes.',
+                thumb: 'https://img.youtube.com/vi/-lFBEsYcXSM/mqdefault.jpg',
+                // Exemplo de um curso com DOIS VÍDEOS (Parte 1 e Parte 2)
+                videos: [
+                    {
+                        youtubeId: '-lFBEsYcXSM', // ID do YouTube do primeiro vídeo
+                        subtitle: 'Parte 1 - Carboidratos e Proteínas' // Legenda do botão
+                    },
+                    {
+                        youtubeId: 'l8liCA_HQCA', // Apenas usando como exemplo de 2º vídeo. Troque pelo ID real.
+                        subtitle: 'Parte 2 - Gorduras' // Legenda do botão
+                    }
+                ]
             }
+            // Para adicionar um TERCEIRO CURSO, coloque uma vírgula na chave } acima e crie um novo bloco { ... }
         ];
 
         // Elementos do DOM
@@ -477,13 +546,15 @@
             searchInput: document.getElementById('nl-search-input'),
             backBtn: document.getElementById('nl-back-btn'),
             videoContainer: document.getElementById('nl-video-container'),
+            videoPartsContainer: document.getElementById('nl-video-parts'), // Novo elemento
             playerTitle: document.getElementById('nl-player-title'),
             playerDesc: document.getElementById('nl-player-desc'),
             playlist: document.getElementById('nl-playlist')
         };
 
         // Estado da Aplicação
-        let currentVideoId = null;
+        let currentCourseId = null;
+        let currentVideoIndex = 0; // Controla qual parte está tocando (0 = Parte 1, 1 = Parte 2...)
 
         function renderGrid(filterText = '') {
             dom.courseGrid.innerHTML = '';
@@ -501,11 +572,15 @@
             filtered.forEach(course => {
                 const card = document.createElement('div');
                 card.className = 'nl-card';
-                card.onclick = () => openPlayer(course.id);
+                card.onclick = () => openPlayer(course.id); // Agora abre pelo ID do Curso
+
+                // Se o curso tiver mais de 1 vídeo, mostra um aviso visual na thumb (opcional, mas bom pra UX)
+                const partsBadge = course.videos.length > 1 ? `<span style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.7); color:white; font-size:0.7rem; padding:4px 8px; border-radius:12px;">${course.videos.length} aulas</span>` : '';
 
                 card.innerHTML = `
                     <div class="nl-card-thumb">
                         <img src="${course.thumb}" alt="${course.title}" class="nl-card-img" loading="lazy">
+                        ${partsBadge}
                         <div class="nl-play-overlay">
                             <div class="nl-play-icon">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -524,34 +599,56 @@
             });
         }
 
-        function openPlayer(videoId) {
-            const course = courses.find(c => c.id === videoId);
+        function openPlayer(courseId) {
+            const course = courses.find(c => c.id === courseId);
             if (!course) return;
 
-            currentVideoId = videoId;
+            currentCourseId = courseId;
+            currentVideoIndex = 0; // Sempre começa do primeiro vídeo
             
             // Ocultar biblioteca, exibir player
             dom.libraryView.style.display = 'none';
             dom.playerView.style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            // Injetar Iframe do YouTube (limpo e leve)
-            // Parâmetros: autoplay=1 (inicia sozinho), rel=0 (não sugere de outros canais), modestbranding=1 (tira logo do YT se possível)
+            // Atualizar Meta Informações
+            dom.playerTitle.textContent = course.title;
+            dom.playerDesc.textContent = course.desc;
+
+            // Carrega o vídeo e os botões
+            loadVideo(0);
+            renderPlaylist();
+        }
+
+        function loadVideo(index) {
+            const course = courses.find(c => c.id === currentCourseId);
+            if (!course || !course.videos[index]) return;
+            
+            currentVideoIndex = index;
+            const videoData = course.videos[index];
+
+            // Injetar Iframe do YouTube usando youtube-nocookie para evitar Erro 153
             dom.videoContainer.innerHTML = `
                 <iframe 
-                    src="https://www.youtube-nocookie.com/embed/${course.id}?autoplay=1&rel=0&modestbranding=1" 
-                    title="${course.title}"
+                    src="https://www.youtube-nocookie.com/embed/${videoData.youtubeId}?autoplay=1&rel=0&modestbranding=1" 
+                    title="${videoData.subtitle}"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                     referrerpolicy="strict-origin-when-cross-origin"
                     allowfullscreen>
                 </iframe>
             `;
 
-            // Atualizar Meta Informações
-            dom.playerTitle.textContent = course.title;
-            dom.playerDesc.textContent = course.desc;
-
-            renderPlaylist();
+            // Renderizar botões de Parte 1, Parte 2 (apenas se houver mais de 1 vídeo)
+            dom.videoPartsContainer.innerHTML = '';
+            if (course.videos.length > 1) {
+                course.videos.forEach((vid, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = `nl-part-btn ${i === currentVideoIndex ? 'active' : ''}`;
+                    btn.textContent = vid.subtitle || `Parte ${i + 1}`;
+                    btn.onclick = () => loadVideo(i);
+                    dom.videoPartsContainer.appendChild(btn);
+                });
+            }
         }
 
         function renderPlaylist() {
@@ -559,9 +656,9 @@
             
             courses.forEach(course => {
                 const item = document.createElement('div');
-                item.className = `nl-playlist-item ${course.id === currentVideoId ? 'active' : ''}`;
+                item.className = `nl-playlist-item ${course.id === currentCourseId ? 'active' : ''}`;
                 item.onclick = () => {
-                    if (course.id !== currentVideoId) openPlayer(course.id);
+                    if (course.id !== currentCourseId) openPlayer(course.id);
                 };
 
                 item.innerHTML = `
@@ -578,7 +675,8 @@
         function closePlayer() {
             // Destruir iframe para parar o vídeo/áudio imediatamente
             dom.videoContainer.innerHTML = '';
-            currentVideoId = null;
+            dom.videoPartsContainer.innerHTML = '';
+            currentCourseId = null;
 
             dom.playerView.style.display = 'none';
             dom.libraryView.style.display = 'block';
