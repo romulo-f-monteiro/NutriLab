@@ -6,10 +6,9 @@
     <title>NutriLab | Plataforma de Minicursos</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Scoped CSS to prevent conflicts */
         #nutrilab {
             --nl-primary: #7CA080;      /* Verde-sálvia suave */
             --nl-primary-hover: #6a8c6e;
@@ -21,6 +20,11 @@
             --nl-radius: 12px;
             --nl-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
             --nl-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.08);
+            
+            --nl-alert-bg: #FFF4E5;
+            --nl-alert-border: #FFD8A8;
+            --nl-alert-text: #663C00;
+            --nl-alert-icon: #E68A00;
             
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--nl-bg);
@@ -39,13 +43,13 @@
 
         #nutrilab .nl-header {
             max-width: 1200px;
-            margin: 0 auto 2.5rem;
+            margin: 0 auto 2rem;
             text-align: center;
         }
 
         #nutrilab .nl-title {
             font-size: 2rem;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--nl-text-main);
             letter-spacing: -0.5px;
             display: flex;
@@ -62,7 +66,32 @@
             font-size: 1rem;
             color: var(--nl-text-muted);
             margin-top: 0.5rem;
-            font-weight: 300;
+            font-weight: 400;
+        }
+
+        #nutrilab .nl-alert {
+            max-width: 1200px;
+            margin: 0 auto 2.5rem;
+            background-color: var(--nl-alert-bg);
+            border: 1px solid var(--nl-alert-border);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            color: var(--nl-alert-text);
+            font-size: 0.9rem;
+            box-shadow: 0 2px 8px rgba(230, 138, 0, 0.05);
+        }
+
+        #nutrilab .nl-alert-icon {
+            flex-shrink: 0;
+            color: var(--nl-alert-icon);
+            margin-top: 2px;
+        }
+        
+        #nutrilab .nl-alert strong {
+            font-weight: 600;
         }
 
         #nutrilab .nl-toolbar {
@@ -179,7 +208,7 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            padding-left: 4px; /* Center the play triangle optically */
+            padding-left: 4px; 
         }
 
         #nutrilab .nl-card-content {
@@ -205,18 +234,13 @@
             line-height: 1.3;
         }
 
-
-#nutrilab .nl-card-desc {
-    font-size: 0.85rem;
-    color: var(--nl-text-muted);
-    line-height: 1.5;
-    flex-grow: 1;
-    text-align: justify;
-    hyphens: auto;
-    -webkit-hyphens: auto;
-    text-justify: inter-word;
-}
-
+        #nutrilab .nl-card-desc {
+            font-size: 0.85rem;
+            color: var(--nl-text-muted);
+            line-height: 1.5;
+            flex-grow: 1;
+            text-align: left;
+        }
 
         #nutrilab .nl-player-view {
             display: none;
@@ -404,15 +428,10 @@
         }
 
         @media (max-width: 600px) {
-            #nutrilab {
-                padding: 1rem;
-            }
-            #nutrilab .nl-title {
-                font-size: 1.5rem;
-            }
-            #nutrilab .nl-player-info h1 {
-                font-size: 1.25rem;
-            }
+            #nutrilab { padding: 1rem; }
+            #nutrilab .nl-title { font-size: 1.5rem; }
+            #nutrilab .nl-player-info h1 { font-size: 1.25rem; }
+            #nutrilab .nl-alert { flex-direction: column; gap: 8px; }
         }
         
         #nutrilab .nl-empty-state {
@@ -438,13 +457,25 @@
             <p class="nl-subtitle">Conhecimento que transforma sua prática.</p>
         </header>
 
+        <!-- NOVO: Aviso de Restrição de Compartilhamento -->
+        <div class="nl-alert">
+            <svg class="nl-alert-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <div>
+                <strong>Aviso de Uso Exclusivo:</strong> Este acesso é <strong>exclusivo para você, nutricionista</strong>. Não compartilhe o link desta plataforma. Nosso sistema rastreia e identifica a origem dos acessos; o compartilhamento indevido viola os termos de uso e deixará seu acesso sujeito a restrições imediatas.
+            </div>
+        </div>
+
         <div class="nl-toolbar">
             <div class="nl-search-wrapper">
                 <svg class="nl-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
-                <input type="text" id="nl-search-input" class="nl-search-input" placeholder="Buscar minicurso..." aria-label="Buscar minicurso">
+                <input type="text" id="nl-search-input" class="nl-search-input" placeholder="Buscar aula ou minicurso..." aria-label="Buscar minicurso">
             </div>
         </div>
 
@@ -480,7 +511,7 @@
             </div>
 
             <aside class="nl-sidebar">
-                <h3 class="nl-sidebar-title">Outros Minicursos</h3>
+                <h3 class="nl-sidebar-title">Conteúdos NutriLab</h3>
                 <div id="nl-playlist">
                     <!-- Lista de aulas será injetada aqui via JS -->
                 </div>
@@ -492,62 +523,73 @@
 <script>
     (function() {
         // ==============================================================================
-        // 📚 ÁREA PARA ADICIONAR OU EDITAR OS CURSOS
-        // Siga os comentários abaixo para adicionar novos vídeos, legendas e categorias.
+        // 📚 ÁREA DE CURSOS ATUALIZADA
         // ==============================================================================
         const courses = [
             {
-                // 1. Identificador único do curso (não use espaços, invente um nome curto)
-                id: 'curso_calculo_dieta', 
-                
-                // 2. Título principal do curso (Legenda)
-                title: 'Suplementos nutricionais na prevenção da desnutrição', 
-                
-                // 3. Categoria (Aparece em cima do título)
-                category: 'Como Interpretar Revisões Sistemáticas na área da nutrição', 
-                
-                // 4. Descrição do curso (Sublegenda)
+                id: 'curso_revisoes', 
+                title: 'Interpretação de Revisões Sistemáticas', 
+                category: 'Prática Baseada em Evidências', 
                 desc: 'Aprenda a interpretar uma revisão sistemática sobre o uso de suplementos nutricionais na prevenção da desnutrição, identificando limitações e compreendendo como aplicar as evidências científicas na prática nutricional.', 
-                
-                // 5. Imagem de capa (Você pode pegar do YouTube mudando o ID no meio do link abaixo)
                 thumb: 'https://img.youtube.com/vi/sMIrgK2gSAY/mqdefault.jpg', 
-                
-                // 6. 🎥 LISTA DE VÍDEOS DESTE CURSO (Aqui você coloca Parte 1, Parte 2, etc.)
                 videos: [
-                    {
-                        // Coloque APENAS o ID do vídeo do YouTube (letras/números depois de ?v=)
-                        youtubeId: '72b-M-ezQVw', 
-                        // Título deste botão/vídeo
-                        subtitle: 'Parte 1' 
-                    },
-                                        {
-                        // Coloque APENAS o ID do vídeo do YouTube (letras/números depois de ?v=)
-                        youtubeId: 'sMIrgK2gSAY', 
-                        // Título deste botão/vídeo
-                        subtitle: 'Parte 2' 
-                    }
-                    // Se quiser adicionar uma parte 2 neste curso, basta adicionar uma vírgula acima e copiar o bloco {}, como no exemplo abaixo.
+                    { youtubeId: '72b-M-ezQVw', subtitle: 'Parte 1 - Fundamentos' },
+                    { youtubeId: 'sMIrgK2gSAY', subtitle: 'Parte 2 - Aplicação' }
                 ]
             },
             {
-                id: 'curso_macronutrientes',
-                title: 'Macronutrientes na Prática',
-                category: 'Nutrição Básica',
-                desc: 'Conheça os macronutrientes e sua importância no planejamento nutricional. Este curso está dividido em duas partes.',
-                thumb: 'https://img.youtube.com/vi/-lFBEsYcXSM/mqdefault.jpg',
-                // Exemplo de um curso com DOIS VÍDEOS (Parte 1 e Parte 2)
+                id: 'dados_nutricao_brasil',
+                title: 'Como Consultar Dados Oficiais de Nutrição no Brasil',
+                category: 'Epidemiologia e Dados Públicos',
+                desc: 'Aprenda a encontrar e interpretar dados do Governo Federal sobre alimentação, obesidade e saúde, utilizando fontes oficiais para conhecer a realidade nutricional brasileira.',
+                thumb: 'https://img.youtube.com/vi/aS8Yr0KtN8c/mqdefault.jpg',
                 videos: [
-                    {
-                        youtubeId: 'xx', // ID do YouTube do primeiro vídeo
-                        subtitle: 'Parte 1 - Carboidratos e Proteínas' // Legenda do botão
-                    },
-                    {
-                        youtubeId: 'xx', // Apenas usando como exemplo de 2º vídeo. Troque pelo ID real.
-                        subtitle: 'Parte 2 - Gorduras' // Legenda do botão
-                    }
+                    { youtubeId: 'aS8Yr0KtN8c', subtitle: 'Aula Completa' }
+                ]
+            },
+            {
+                id: 'obesidade_perspectiva',
+                title: 'Obesidade Clínica e Pré-Clínica: Uma Nova Perspectiva',
+                category: 'Obesidade e Saúde Metabólica',
+                desc: 'Entenda a nova classificação da obesidade, as diferenças entre obesidade clínica e pré-clínica e suas implicações para a avaliação e o cuidado em saúde.',
+                thumb: 'https://img.youtube.com/vi/I1uZRbjyZ8s/mqdefault.jpg',
+                videos: [
+                    { youtubeId: 'I1uZRbjyZ8s', subtitle: 'Parte 1' },
+                    { youtubeId: 'lY899sppmHY', subtitle: 'Parte 2' }
+                ]
+            },
+            {
+                id: 'metodos_gasto_energetico',
+                title: 'Métodos para Avaliar o Gasto Energético',
+                category: 'Atividade Física e Gasto Energético',
+                desc: 'Conheça métodos objetivos e subjetivos de avaliação do gasto energético, incluindo acelerômetros e dispositivos vestíveis (wearables), suas aplicações e limitações.',
+                thumb: 'https://img.youtube.com/vi/LmA6188T1KQ/mqdefault.jpg',
+                videos: [
+                    { youtubeId: 'LmA6188T1KQ', subtitle: 'Parte 1 — Métodos de avaliação' },
+                    { youtubeId: 'jOXPZ8LT344', subtitle: 'Parte 2 — Acelerômetros' },
+                    { youtubeId: 'OOPyNwywPgo', subtitle: 'Parte 3 — Wearables' }
+                ]
+            },
+            {
+                id: 'calculo_gasto_mets',
+                title: 'Como Calcular o Gasto Calórico Utilizando METs',
+                category: 'Fisiologia do Exercício',
+                desc: 'Aprenda a estimar o gasto calórico de diferentes atividades físicas utilizando equivalentes metabólicos (METs), com base em evidências científicas e exemplos práticos.',
+                thumb: 'https://img.youtube.com/vi/c8KeyBy-YZI/mqdefault.jpg',
+                videos: [
+                    { youtubeId: 'c8KeyBy-YZI', subtitle: 'Aula Completa' }
+                ]
+            },
+            {
+                id: 'comportamento_24h',
+                title: 'Comportamento nas 24 Horas: Consenso Científico',
+                category: 'Atividade Física, Sedentarismo e Sono',
+                desc: 'Entenda como atividade física, comportamento sedentário e sono se relacionam ao longo das 24 horas do dia, com base em recomendações e consensos científicos internacionais.',
+                thumb: 'https://img.youtube.com/vi/OGNx7_hIUhQ/mqdefault.jpg',
+                videos: [
+                    { youtubeId: 'OGNx7_hIUhQ', subtitle: 'Aula Completa' }
                 ]
             }
-            // Para adicionar um TERCEIRO CURSO, coloque uma vírgula na chave } acima e crie um novo bloco { ... }
         ];
 
         // Elementos do DOM
@@ -558,7 +600,7 @@
             searchInput: document.getElementById('nl-search-input'),
             backBtn: document.getElementById('nl-back-btn'),
             videoContainer: document.getElementById('nl-video-container'),
-            videoPartsContainer: document.getElementById('nl-video-parts'), // Novo elemento
+            videoPartsContainer: document.getElementById('nl-video-parts'),
             playerTitle: document.getElementById('nl-player-title'),
             playerDesc: document.getElementById('nl-player-desc'),
             playlist: document.getElementById('nl-playlist')
@@ -566,7 +608,7 @@
 
         // Estado da Aplicação
         let currentCourseId = null;
-        let currentVideoIndex = 0; // Controla qual parte está tocando (0 = Parte 1, 1 = Parte 2...)
+        let currentVideoIndex = 0;
 
         function renderGrid(filterText = '') {
             dom.courseGrid.innerHTML = '';
@@ -577,17 +619,16 @@
             );
 
             if (filtered.length === 0) {
-                dom.courseGrid.innerHTML = '<div class="nl-empty-state">Nenhum minicurso encontrado.</div>';
+                dom.courseGrid.innerHTML = '<div class="nl-empty-state">Nenhum minicurso encontrado com este termo.</div>';
                 return;
             }
 
             filtered.forEach(course => {
                 const card = document.createElement('div');
                 card.className = 'nl-card';
-                card.onclick = () => openPlayer(course.id); // Agora abre pelo ID do Curso
+                card.onclick = () => openPlayer(course.id);
 
-                // Se o curso tiver mais de 1 vídeo, mostra um aviso visual na thumb (opcional, mas bom pra UX)
-                const partsBadge = course.videos.length > 1 ? `<span style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.7); color:white; font-size:0.7rem; padding:4px 8px; border-radius:12px;">${course.videos.length} aulas</span>` : '';
+                const partsBadge = course.videos.length > 1 ? `<span style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.7); color:white; font-size:0.7rem; padding:4px 8px; border-radius:12px; font-weight: 500;">${course.videos.length} aulas</span>` : '';
 
                 card.innerHTML = `
                     <div class="nl-card-thumb">
@@ -616,18 +657,15 @@
             if (!course) return;
 
             currentCourseId = courseId;
-            currentVideoIndex = 0; // Sempre começa do primeiro vídeo
+            currentVideoIndex = 0;
             
-            // Ocultar biblioteca, exibir player
             dom.libraryView.style.display = 'none';
             dom.playerView.style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            // Atualizar Meta Informações
             dom.playerTitle.textContent = course.title;
             dom.playerDesc.textContent = course.desc;
 
-            // Carrega o vídeo e os botões
             loadVideo(0);
             renderPlaylist();
         }
@@ -639,7 +677,6 @@
             currentVideoIndex = index;
             const videoData = course.videos[index];
 
-            // Injetar Iframe do YouTube usando youtube-nocookie para evitar Erro 153
             dom.videoContainer.innerHTML = `
                 <iframe 
                     src="https://www.youtube-nocookie.com/embed/${videoData.youtubeId}?autoplay=1&rel=0&modestbranding=1" 
@@ -650,7 +687,6 @@
                 </iframe>
             `;
 
-            // Renderizar botões de Parte 1, Parte 2 (apenas se houver mais de 1 vídeo)
             dom.videoPartsContainer.innerHTML = '';
             if (course.videos.length > 1) {
                 course.videos.forEach((vid, i) => {
@@ -685,7 +721,6 @@
         }
 
         function closePlayer() {
-            // Destruir iframe para parar o vídeo/áudio imediatamente
             dom.videoContainer.innerHTML = '';
             dom.videoPartsContainer.innerHTML = '';
             currentCourseId = null;
@@ -702,7 +737,7 @@
 
         dom.backBtn.addEventListener('click', closePlayer);
 
-        // Inicializar
+        // Inicializar a grade de vídeos
         renderGrid();
     })();
 </script>
